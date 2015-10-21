@@ -10,7 +10,8 @@ final class Application {
     }
 
     public function start() {
-        var_dump('start!!!');
+        $p = $this->_parseRichiesta();
+        var_dump($p);
     }
 
     /**
@@ -25,6 +26,17 @@ final class Application {
             die('Bastaaaaa!!!!');
         endif;
         return self::$_istanza;
+    }
+
+    private function _parseRichiesta() {
+        $url = preg_split('/[\/]/iD', $_SERVER['REQUEST_URI']);
+        $a = array(
+            'controller' => $url[2],
+            'action' => $url[3],
+        );
+        if (count($url) > 4)
+            $a['parametro'] = $url[4];
+        return $a;
     }
 
 }
