@@ -13,6 +13,12 @@ final class Application {
         $p = $this->_parseRichiesta();
         $file = $this->_primaMaiuscola($p['controller'], 'Controller');
         if (file_exists(dirname($_SERVER['SCRIPT_FILENAME']) . '/application/controllers/' . $file . '.php')) :
+            require 'application/controllers/' . $file . '.php';
+            if (class_exists($file)) :
+
+            else :
+                die('Classe del controller ' . $file . ' non definita!!!');
+            endif;
         else :
             die('File del controller ' . $file . ' mancante!!!');
         endif;
