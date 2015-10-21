@@ -11,7 +11,11 @@ final class Application {
 
     public function start() {
         $p = $this->_parseRichiesta();
-        var_dump($p);
+        $file = $this->_primaMaiuscola($p['controller'], 'Controller');
+        if (file_exists(dirname($_SERVER['SCRIPT_FILENAME']) . '/application/controllers/' . $file . '.php')) :
+        else :
+            die('File del controller ' . $file . ' mancante!!!');
+        endif;
     }
 
     /**
@@ -29,14 +33,27 @@ final class Application {
     }
 
     private function _parseRichiesta() {
-        $url = preg_split('/[\/]/iD', $_SERVER['REQUEST_URI']);
+        // SCRIPT_NAME -> /ArtooTest2/index.php        
+        $base = dirname($_SERVER['SCRIPT_NAME']);
+        $url = str_replace($base, '', $_SERVER['REQUEST_URI']);
+        $url_split = preg_split('/[\/]/', $url);
         $a = array(
-            'controller' => $url[2],
-            'action' => $url[3],
+            'controller' => $url_split[1],
+            'action' => $url_split[2],
         );
-        if (count($url) > 4)
-            $a['parametro'] = $url[4];
+        if (count($url_split) > 3)
+            $a['parametro'] = $url_split[3];
         return $a;
+    }
+
+    private function _primaMaiuscola($stringa, $prefisso) {
+        return $prefisso . strtoupper($stringa[0]) . substr($stringa, 1);
+    }
+
+    private function _a() {
+        foreach ($_SERVER as $k => $v) :
+            echo "$k -> $v<br />";
+        endforeach;
     }
 
 }
