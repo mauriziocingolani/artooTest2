@@ -15,7 +15,14 @@ final class Application {
         if (file_exists(dirname($_SERVER['SCRIPT_FILENAME']) . '/application/controllers/' . $file . '.php')) :
             require 'application/controllers/' . $file . '.php';
             if (class_exists($file)) :
-
+                $action = $this->_primaMaiuscola($p['action'], 'action');
+                if (method_exists($file, $action)) :
+                    $obj = new $file;
+                    $obj->folder = $p['controller'];
+                    isset($p['parametro']) ? $obj->$action($p['parametro']) : $obj->$action();
+                else :
+                    die("Azione $action non trovata!");
+                endif;
             else :
                 die('Classe del controller ' . $file . ' non definita!!!');
             endif;
